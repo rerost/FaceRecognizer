@@ -4,6 +4,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <map>
+#include "core.hpp"
 using namespace std;
 
 //const int LEYE  = 0;
@@ -11,69 +12,6 @@ using namespace std;
 const int NOSE  = 2;
 const int MOUTH = 3;
 const double SCALE = 1;
-
-typedef pair<std::string, cv::Rect> pair_id_rect;
-
-enum faceParts{ face, eye, nose, mouth };
-
-typedef struct CascadeData{
-	CascadeData(const cv::Mat& image, 
-			std::string name, 
-			const cv::Size rectSize, 
-			const int rectQuantity, 
-			const cv::Scalar color, 
-			int cnt, 
-			faceParts id)
-		:img(image.clone()),
-		detector(name), 
-		minRectSize(rectSize), 
-		minRectQuantity(rectQuantity), 
-		rectColor(color), 
-		count(cnt), 
-		cascadeId(id) 
-	{}
-
-	cv::Mat		img;
-	std::string detector;
-	cv::Size	minRectSize;      //scale
-	int			minRectQuantity;
-	cv::Scalar	rectColor;
-	int			count;
-	faceParts cascadeId;
-} CascadeData;
-
-template<typename T>
-struct Point{
-	T x;
-	T y;
-	Point() : x(-1),y(-1) {}
-	Point(T x_, T y_) : x(x_), y(y_) {}
-};
-
-class PersonData{
-	public:
-		int id;
-		cv::Rect eyeR;
-		cv::Rect eyeL;
-		cv::Rect nose;
-		cv::Rect mouse;
-		cv::Mat image;
-
-		//未定義
-		int face_color;
-		int eyeMany;
-		int noseMany;
-		int mouseMany;
-
-		PersonData(){
-			id = -1;
-		}
-
-		PersonData(int id_) : id(id_) {}
-		PersonData(int id_, cv::Mat& image_) : id(id_), image(image_.clone()){}
-		//以下のコンストラクタは想定しない。
-		//PersonData(int ID_, Point eyeR_, Point eyeL_,... )
-};
 
 //顔を検出し、その画像をそれぞれ出力する
 int find_face(const cv::Mat photo, const std::string cascadeFilename, std::vector<PersonData>& output){
